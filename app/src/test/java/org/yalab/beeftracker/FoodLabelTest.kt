@@ -1,10 +1,19 @@
 package org.yalab.beeftracker
 
-import org.junit.jupiter.api.Assertions.*
+import org.junit.Before
 
-internal class FoodLabelTest {
+import org.junit.Assert.*
+import org.junit.Test
 
-    @org.junit.jupiter.api.BeforeEach
+class FoodLabelTest {
+    lateinit var foodLabel : FoodLabel
+    @Before
     fun setUp() {
+        foodLabel = FoodLabel()
+    }
+
+    @Test
+    fun detectTest() {
+        assertEquals("1234", foodLabel.detect())
     }
 }
