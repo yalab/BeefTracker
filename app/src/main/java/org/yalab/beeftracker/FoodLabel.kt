@@ -12,9 +12,10 @@ class FoodLabel {
         val dir = File(context.filesDir, "tessdata")
 //        if(!dir.exists()){
             dir.mkdir()
-            val filename = "tessdata/jpn.traineddata"
+            val filename = "tessdata/eng.traineddata"
             val src = context.assets.open(filename)
-            val dst = File(dir.toString() + "/jpn.traineddata")
+            val dst = File(dir.toString() + "/eng.traineddata")
+            dst.delete()
             dst.createNewFile()
             dst.outputStream().use {
                 it.write(src.readBytes())
@@ -22,7 +23,7 @@ class FoodLabel {
 //        }
 
         val baseApi = TessBaseAPI()
-        baseApi.init(context.filesDir.toString(), "jpn")
+        baseApi.init(context.filesDir.toString(), "eng")
         val bitmap = BitmapFactory.decodeStream(inputStream)
         baseApi.setImage(bitmap)
         val recognizedText = baseApi.utF8Text

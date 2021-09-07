@@ -22,7 +22,7 @@ class FodLabelTest {
 
     @Test
     fun foodLabelDetect() {
-        val image = context.assets.open("image.jpg")
+        val image = context.assets.open("image.png")
         foodLabel.detect(context, image)
     }
 }
