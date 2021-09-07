@@ -26,8 +26,8 @@ class FoodLabel {
         baseApi.init(context.filesDir.toString(), "eng")
         val bitmap = BitmapFactory.decodeStream(inputStream)
         baseApi.setImage(bitmap)
-        val recognizedText = baseApi.utF8Text
+        val recognizedText = baseApi.utF8Text as String
         baseApi.end()
-        return recognizedText
+        return recognizedText.replace(Regex("[\\s”]"),"").replace("I", "1", true)
     }
 }
