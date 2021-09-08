@@ -6,22 +6,21 @@ import com.googlecode.tesseract.android.TessBaseAPI
 import java.io.File
 import java.io.InputStream
 
-class FoodLabel {
-    fun detect(context: Context, inputStream: InputStream) : String {
-
-        val dir = File(context.filesDir, "tessdata")
-//        if(!dir.exists()){
-            dir.mkdir()
-            val filename = "tessdata/eng.traineddata"
+class FoodLabel constructor(_context: Context) {
+    val context: Context
+    init{
+        context = _context
+        val filename = "tessdata/eng.traineddata"
+        val dataFile = File(context.filesDir, filename)
+        val dir = dataFile.parentFile
+        if(!dir.exists()) { dir.mkdir() }
+        if(!dataFile.exists()){
             val src = context.assets.open(filename)
-            val dst = File(dir.toString() + "/eng.traineddata")
-            dst.delete()
-            dst.createNewFile()
-            dst.outputStream().use {
-                it.write(src.readBytes())
-            }
-//        }
-
+            dataFile.createNewFile()
+            dataFile.outputStream().use { it.write(src.readBytes()) }
+        }
+    }
+    fun detect(inputStream: InputStream) : String {
         val baseApi = TessBaseAPI()
         baseApi.init(context.filesDir.toString(), "eng")
         val bitmap = BitmapFactory.decodeStream(inputStream)

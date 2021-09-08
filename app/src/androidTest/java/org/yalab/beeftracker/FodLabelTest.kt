@@ -16,13 +16,13 @@ class FodLabelTest {
     lateinit var context : Context
     @Before
     fun setUp() {
-        foodLabel = FoodLabel()
         context = InstrumentationRegistry.getInstrumentation().targetContext
+        foodLabel = FoodLabel(context)
     }
 
     @Test
     fun foodLabelDetect() {
         val image = context.assets.open("image.png")
-        assertEquals("1234567890", foodLabel.detect(context, image))
+        assertEquals("1234567890", foodLabel.detect(image))
     }
 }
