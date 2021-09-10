@@ -33,6 +33,9 @@ class FirstFragment : Fragment() {
     ): View? {
         foodLabel = FoodLabel(context as Context)
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
+        val image2 = (context as Context).assets.open("image.jpg")
+        var bmp = BitmapFactory.decodeStream(image2)
+        binding.imageView.setImageBitmap(bmp)
         return binding.root
 
     }
@@ -45,37 +48,17 @@ class FirstFragment : Fragment() {
             val image = context.assets.open("image.png")
             binding.textviewFirst.text = foodLabel.detect(image)
 
-            val image2 = context.assets.open("image.jpg")
-            var bmp = BitmapFactory.decodeStream(image2)
             OpenCVLoader.initDebug();
             var src = Mat()
-            Utils.bitmapToMat(bmp, src)
+            val image2 = context.assets.open("image.jpg")
+            Utils.bitmapToMat(BitmapFactory.decodeStream(image2), src)
 
-            Imgproc.cvtColor(src, src, Imgproc.COLOR_RGB2GRAY)
-            val hierarchy = Mat.zeros(Size(5.0, 5.0), CvType.CV_8UC1)
-            val invsrc = src.clone()
-            var contours = ArrayList<MatOfPoint>()
-            Imgproc.findContours(invsrc, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_TC89_L1)
-            val dst=Mat.zeros(Size(src.width().toDouble(), src.height().toDouble()), CvType.CV_8UC3)
-            var color = Scalar(255.0, 255.0, 255.0)
-            Imgproc.drawContours(dst, contours, -1, color,1)
+            val dst = Mat.zeros(Size(src.width().toDouble(), src.height().toDouble()), CvType.CV_8UC3)
+            Imgproc.cvtColor(src, dst, Imgproc.COLOR_RGB2GRAY)
+            Imgproc.Canny(dst, dst, 50.0, 200.0);
 
-            val j = contours.size - 1
-            for(i in 0..j) {
-                val ptmat= contours.get(i)
-                color = Scalar(255.0, 0.0, 0.0)
-                val ptmat2 : MatOfPoint2f = MatOfPoint2f(*ptmat.toArray())
-                val bbox = Imgproc.minAreaRect(ptmat2)
-                val box = bbox.boundingRect()
-                Imgproc.circle(dst, bbox.center, 5, color, -1)
-                color = Scalar(0.0, 255.0, 0.0)
-                Imgproc.rectangle(dst, box.tl(), box.br(), color, 2)
-            }
-
-
-            var output = Bitmap.createBitmap(bmp.width, bmp.height, Bitmap.Config.ARGB_8888)
+            var output = Bitmap.createBitmap(dst.width(), dst.height(), Bitmap.Config.ARGB_8888)
             Utils.matToBitmap(dst, output)
-//            Utils.matToBitmap(src, output)
             binding.imageView.setImageBitmap(output)
         }
     }
