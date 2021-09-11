@@ -34,12 +34,12 @@ class FoodLabel constructor(_context: Context) {
         }
     }
 
-    fun detect(inputStream: InputStream) : String {
+    fun recognize(inputStream: InputStream) : String {
         val bitmap = BitmapFactory.decodeStream(inputStream)
-        return detect(bitmap)
+        return recognize(bitmap)
     }
 
-    fun detect(bitmap: Bitmap) : String {
+    fun recognize(bitmap: Bitmap) : String {
         val baseApi = TessBaseAPI()
         baseApi.init(context.filesDir.toString(), "eng")
         baseApi.setImage(bitmap)

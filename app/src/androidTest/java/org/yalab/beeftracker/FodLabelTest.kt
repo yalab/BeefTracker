@@ -23,6 +23,6 @@ class FodLabelTest {
     @Test
     fun foodLabelDetect() {
         val image = context.assets.open("image.png")
-        assertEquals("1234567890", foodLabel.detect(image))
+        assertEquals("1234567890", foodLabel.recognize(image))
     }
 }

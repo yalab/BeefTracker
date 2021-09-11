@@ -48,7 +48,7 @@ class FirstFragment : Fragment() {
         binding.buttonFirst.setOnClickListener {
             val context = context as Context
             val image = context.assets.open("image.png")
-            binding.textviewFirst.text = foodLabel.detect(image)
+            binding.textviewFirst.text = foodLabel.recognize(image)
 
             OpenCVLoader.initDebug();
             var src = Mat()
