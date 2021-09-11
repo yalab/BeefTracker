@@ -9,6 +9,9 @@ import java.io.InputStream
 
 class FoodLabel constructor(_context: Context) {
     val context: Context
+    companion object {
+        lateinit var PB_FILE: String
+    }
     init{
         context = _context
         val filename = "tessdata/eng.traineddata"
@@ -19,6 +22,15 @@ class FoodLabel constructor(_context: Context) {
             val src = context.assets.open(filename)
             dataFile.createNewFile()
             dataFile.outputStream().use { it.write(src.readBytes()) }
+        }
+        // https://www.dropbox.com/s/r2ingd0l3zt8hxs/frozen_east_text_detection.tar.gz?dl=1
+        val pbFileName = "frozen_east_text_detection.pb"
+        val pbFile = File(context.filesDir, pbFileName)
+        PB_FILE = pbFile.path
+        if(!pbFile.exists()) {
+            val src = context.assets.open(pbFileName)
+            pbFile.createNewFile()
+            pbFile.outputStream().use { it.write(src.readBytes()) }
         }
     }
 
