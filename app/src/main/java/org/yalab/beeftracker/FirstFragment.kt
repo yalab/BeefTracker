@@ -45,7 +45,8 @@ class FirstFragment : Fragment() {
         binding.buttonFirst.setOnClickListener {
             val context = context as Context
             val image = context.assets.open("image.png")
-            binding.textviewFirst.text = foodLabel.recognize(image)
+            val text = foodLabel.recognize(image)
+            binding.textviewFirst.text = text
             val image2 = context.assets.open("image.jpg")
             val mat = Mat()
             Utils.bitmapToMat(BitmapFactory.decodeStream(image2), mat)
@@ -57,6 +58,7 @@ class FirstFragment : Fragment() {
                     Imgproc.line(mat, vertices[j], vertices[(j + 1) % 4], green, 10)
                 }
             })
+            val str = foodLabel.recognize(mat, rectangles)
             val output = Bitmap.createBitmap(mat.width(), mat.height(), Bitmap.Config.ARGB_8888)
             Utils.matToBitmap(mat, output)
             binding.imageView.setImageBitmap(output)
