@@ -54,37 +54,31 @@ class FirstFragment : Fragment() {
             Utils.bitmapToMat(BitmapFactory.decodeStream(image2), src)
             val dst = Mat.zeros(Size(src.width().toDouble(), src.height().toDouble()), CvType.CV_8UC3)
             src.copyTo(dst)
-            if(step >= 0) { Imgproc.cvtColor(dst, dst, Imgproc.COLOR_RGB2GRAY) }
-            if(step >= 1) { Imgproc.GaussianBlur(dst, dst, Size(5.0, 5.0), 5.0) }
-            if(step >= 2) { Imgproc.Sobel(dst, dst, -1, 0, 1) }
-            if(step >= 3) { Imgproc.threshold(dst, dst, 100.0, 255.0, Imgproc.THRESH_BINARY)}
-            if(step >= 4) { Imgproc.morphologyEx(dst, dst, Imgproc.MORPH_CLOSE, Mat(3, 3, CvType.CV_8UC1), Point(-1.0, -1.0), 3)}
+            var label = "next"
+            if(step >= 0) { Imgproc.cvtColor(dst, dst, Imgproc.COLOR_RGB2GRAY); label = "gray scale" }
+            if(step >= 1) { Imgproc.GaussianBlur(dst, dst, Size(5.0, 5.0), 5.0); label = "grassian" }
+            if(step >= 2) { Imgproc.Sobel(dst, dst, -1, 1, 0); label = "sobel" }
+            if(step >= 3) { Imgproc.threshold(dst, dst, 100.0, 255.0, Imgproc.THRESH_BINARY); label = "threshhold"}
+            if(step >= 4) { Imgproc.morphologyEx(dst, dst, Imgproc.MORPH_CLOSE, Mat(3, 3, CvType.CV_8UC1), Point(-1.0, -1.0), 3); label = "morphology"}
             if(step >= 5) {
                 val hierarchy = Mat()
                 val contours = ArrayList<MatOfPoint>()
-                Imgproc.findContours(
-                    dst,
-                    contours,
-                    hierarchy,
-                    Imgproc.RETR_LIST,
-                    Imgproc.CHAIN_APPROX_TC89_L1
-                )
+                Imgproc.findContours(dst, contours, hierarchy, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE)
                 src.copyTo(dst)
-                Imgproc.drawContours(dst, contours, -1, Scalar(255.0, 0.0, 0.0), 10)
-
-                val blue = Scalar(255.0, 0.0, 0.0)
                 val green = Scalar(0.0, 255.0, 0.0)
+                val red = Scalar(255.0, 0.0, 0.0)
                 contours.forEach({ ptmat ->
                     val ptmat2 = MatOfPoint2f(*ptmat.toArray())
                     val bbox = Imgproc.minAreaRect(ptmat2)
                     val box = bbox.boundingRect()
-                    Imgproc.circle(dst, bbox.center, 5, blue, -1)
                     Imgproc.rectangle(dst, box.tl(), box.br(), green, 10)
                 })
+                Imgproc.drawContours(dst, contours, -1, red, 10)
+                label = "contours"
             }
-            if(step >= 6) { src.copyTo(dst); step = -1 }
+            if(step >= 6) { src.copyTo(dst); step = -1; label = "next" }
             step ++
-            binding.buttonFirst.text = step.toString()
+            binding.buttonFirst.text = label
             var output = Bitmap.createBitmap(dst.width(), dst.height(), Bitmap.Config.ARGB_8888)
             Utils.matToBitmap(dst, output)
             binding.imageView.setImageBitmap(output)
