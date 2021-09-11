@@ -45,6 +45,10 @@ class FoodLabel constructor(_context: Context) {
         dnnNet = Dnn.readNetFromTensorflow(pbFile.path)
     }
 
+    protected fun finalize() {
+        baseApi.end()
+    }
+
     fun recognize(inputStream: InputStream) : String {
         val bitmap = BitmapFactory.decodeStream(inputStream)
         return recognize(bitmap)
@@ -53,7 +57,6 @@ class FoodLabel constructor(_context: Context) {
     fun recognize(bitmap: Bitmap) : String {
         baseApi.setImage(bitmap)
         val recognizedText = baseApi.utF8Text as String
-//        baseApi.end()
         return recognizedText.replace(Regex("[\\s”]"),"").replace("I", "1", true)
     }
 
