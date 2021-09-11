@@ -58,12 +58,12 @@ class FirstFragment : Fragment() {
             if(step >= 0) { Imgproc.cvtColor(dst, dst, Imgproc.COLOR_RGB2GRAY); label = "gray scale" }
             if(step >= 1) { Imgproc.GaussianBlur(dst, dst, Size(5.0, 5.0), 5.0); label = "grassian" }
             if(step >= 2) { Imgproc.Sobel(dst, dst, -1, 1, 0); label = "sobel" }
-            if(step >= 3) { Imgproc.threshold(dst, dst, 100.0, 255.0, Imgproc.THRESH_BINARY); label = "threshhold"}
+            if(step >= 3) { Imgproc.threshold(dst, dst, 100.0, 255.0, Imgproc.THRESH_OTSU); label = "threshhold"}
             if(step >= 4) { Imgproc.morphologyEx(dst, dst, Imgproc.MORPH_CLOSE, Mat(3, 3, CvType.CV_8UC1), Point(-1.0, -1.0), 3); label = "morphology"}
             if(step >= 5) {
                 val hierarchy = Mat()
                 val contours = ArrayList<MatOfPoint>()
-                Imgproc.findContours(dst, contours, hierarchy, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE)
+                Imgproc.findContours(dst, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
                 src.copyTo(dst)
                 val green = Scalar(0.0, 255.0, 0.0)
                 val red = Scalar(255.0, 0.0, 0.0)
@@ -73,7 +73,7 @@ class FirstFragment : Fragment() {
                     val box = bbox.boundingRect()
                     Imgproc.rectangle(dst, box.tl(), box.br(), green, 10)
                 })
-                Imgproc.drawContours(dst, contours, -1, red, 10)
+//                Imgproc.drawContours(dst, contours, -1, red, 10)
                 label = "contours"
             }
             if(step >= 6) { src.copyTo(dst); step = -1; label = "next" }
