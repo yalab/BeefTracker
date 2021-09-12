@@ -19,9 +19,14 @@ class FodLabelTest {
     }
 
     @Test
-    fun foodLabelDetect() {
-        val image = context.assets.open("image.png")
-        val foodLabel = FoodLabel(context, image)
+    fun foodLabelPNG() {
+        val foodLabel = FoodLabel(context, context.assets.open("image.png"))
         assertEquals(listOf("|72ARF", "890 \\"), foodLabel.texts)
+    }
+
+    @Test
+    fun foodLabelJPG() {
+        val foodLabel = FoodLabel(context, context.assets.open("image.jpg"))
+        assertEquals(listOf(", 1 - ,\nflﬁiﬂz‘ﬂ'lﬁﬁ\n1490915461"), foodLabel.texts)
     }
 }
