@@ -11,7 +11,7 @@ import org.junit.Assert.*
 import org.junit.Before
 
 @RunWith(AndroidJUnit4::class)
-class FodLabelTest {
+class FoodLabelTest {
     lateinit var context : Context
     @Before
     fun setUp() {
