@@ -31,4 +31,14 @@ class FoodLabelTest {
     fun foodLabelJPG() {
         assertEquals(listOf(", 1 - ,\nflﬁiﬂz‘ﬂ'lﬁﬁ\n1490915461"), foodLabel("image.jpg").texts)
     }
+
+    @Test
+    fun beefTrackingNumberPNG() {
+        assertEquals("", foodLabel("image.png").beefTrackingNumber())
+    }
+
+    @Test
+    fun beefTrackingNumberJPG() {
+        assertEquals("1490915461", foodLabel("image.jpg").beefTrackingNumber())
+    }
 }

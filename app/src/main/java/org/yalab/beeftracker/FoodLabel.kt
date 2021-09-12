@@ -21,6 +21,10 @@ class FoodLabel constructor(_context: Context, inputStream: InputStream) {
     private val context: Context
     private val dnnNet: Net
     private val baseApi: TessBaseAPI
+    companion object {
+        val REG_TRACKNING_NUMBER = Regex("""\d{10}""")
+    }
+
     init{
         context = _context
         val filename = "tessdata/eng.traineddata"
@@ -58,6 +62,16 @@ class FoodLabel constructor(_context: Context, inputStream: InputStream) {
         texts = recognize(mat, rectangles)
         bitmap = Bitmap.createBitmap(mat.width(), mat.height(), Bitmap.Config.ARGB_8888)
         Utils.matToBitmap(mat, bitmap)
+    }
+
+    fun beefTrackingNumber(): String {
+        texts.forEach({ text ->
+            val match = REG_TRACKNING_NUMBER.find(text)
+            if(match != null) {
+                return match.value
+            }
+        })
+        return ""
     }
 
     protected fun finalize() {
