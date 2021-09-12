@@ -19,7 +19,6 @@ import org.yalab.beeftracker.databinding.FragmentFirstBinding
  */
 class FirstFragment : Fragment() {
     private var _binding: FragmentFirstBinding? = null
-    private lateinit var foodLabel : FoodLabel
     var step = 0
 
     // This property is only valid between onCreateView and
@@ -30,7 +29,6 @@ class FirstFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        foodLabel = FoodLabel(context as Context)
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
         val image2 = (context as Context).assets.open("image.jpg")
         var bmp = BitmapFactory.decodeStream(image2)
@@ -44,24 +42,10 @@ class FirstFragment : Fragment() {
 
         binding.buttonFirst.setOnClickListener {
             val context = context as Context
-            val image = context.assets.open("image.png")
-            val text = foodLabel.recognize(image)
-            binding.textviewFirst.text = text
             val image2 = context.assets.open("image.jpg")
-            val mat = Mat()
-            Utils.bitmapToMat(BitmapFactory.decodeStream(image2), mat)
-
-            val rectangles = foodLabel.textRectangles(mat)
-            val green = Scalar(0.0, 255.0, 0.0)
-            rectangles.forEach({vertices ->
-                for (j in 0..3) {
-                    Imgproc.line(mat, vertices[j], vertices[(j + 1) % 4], green, 10)
-                }
-            })
-            val str = foodLabel.recognize(mat, rectangles)
-            val output = Bitmap.createBitmap(mat.width(), mat.height(), Bitmap.Config.ARGB_8888)
-            Utils.matToBitmap(mat, output)
-            binding.imageView.setImageBitmap(output)
+            val foodLabel = FoodLabel(context, image2)
+            val texts = foodLabel.texts
+            binding.imageView.setImageBitmap(foodLabel.bitmap)
         }
     }
 

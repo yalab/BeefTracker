@@ -12,17 +12,16 @@ import org.junit.Before
 
 @RunWith(AndroidJUnit4::class)
 class FodLabelTest {
-    lateinit var foodLabel : FoodLabel
     lateinit var context : Context
     @Before
     fun setUp() {
         context = InstrumentationRegistry.getInstrumentation().targetContext
-        foodLabel = FoodLabel(context)
     }
 
     @Test
     fun foodLabelDetect() {
         val image = context.assets.open("image.png")
-        assertEquals("1234567890", foodLabel.recognize(image))
+        val foodLabel = FoodLabel(context, image)
+        assertEquals(listOf("|72ARF", "890 \\"), foodLabel.texts)
     }
 }

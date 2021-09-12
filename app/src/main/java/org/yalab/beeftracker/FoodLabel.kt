@@ -14,10 +14,13 @@ import org.opencv.dnn.Net
 import org.opencv.imgproc.Imgproc
 import org.opencv.utils.Converters
 
-class FoodLabel constructor(_context: Context) {
-    val context: Context
-    val dnnNet: Net
-    val baseApi: TessBaseAPI
+class FoodLabel constructor(_context: Context, inputStream: InputStream) {
+    val bitmap: Bitmap
+    val texts: List<String>
+
+    private val context: Context
+    private val dnnNet: Net
+    private val baseApi: TessBaseAPI
     init{
         context = _context
         val filename = "tessdata/eng.traineddata"
@@ -43,38 +46,44 @@ class FoodLabel constructor(_context: Context) {
         }
         OpenCVLoader.initDebug();
         dnnNet = Dnn.readNetFromTensorflow(pbFile.path)
+        val mat = Mat()
+        Utils.bitmapToMat(BitmapFactory.decodeStream(inputStream), mat)
+        val rectangles = textRectangles(mat)
+        val green = Scalar(0.0, 255.0, 0.0)
+        rectangles.forEach({vertices ->
+            for (j in 0..3) {
+                Imgproc.line(mat, vertices[j], vertices[(j + 1) % 4], green, 10)
+            }
+        })
+        texts = recognize(mat, rectangles)
+        bitmap = Bitmap.createBitmap(mat.width(), mat.height(), Bitmap.Config.ARGB_8888)
+        Utils.matToBitmap(mat, bitmap)
     }
 
     protected fun finalize() {
         baseApi.end()
     }
 
-    fun recognize(inputStream: InputStream) : String {
-        val bitmap = BitmapFactory.decodeStream(inputStream)
-        return recognize(bitmap)
-    }
-
-    fun recognize(bitmap: Bitmap) : String {
-        baseApi.setImage(bitmap)
-        val recognizedText = baseApi.utF8Text as String
-        return recognizedText.replace(Regex("[\\s”]"),"").replace("I", "1", true)
-    }
-
-    fun recognize(mat: Mat, rectangles: List<Array<Point?>>): String {
+    private fun recognize(mat: Mat, rectangles: List<Array<Point?>>): List<String> {
         val output = Bitmap.createBitmap(mat.width(), mat.height(), Bitmap.Config.ARGB_8888)
         Utils.matToBitmap(mat, output)
         baseApi.setImage(output)
-        val rectangle = rectangles[0] //FIXME: select tracking number rectangle.
-        val x = rectangle[1]!!.x
-        val y = rectangle[1]!!.y
-        val width = rectangle[3]!!.x - rectangle[1]!!.x
-        val height = rectangle[3]!!.y - rectangle[1]!!.y
-        baseApi.setRectangle(x.toInt(), y.toInt(), width.toInt(), height.toInt())
-        val recognizedText = baseApi.utF8Text as String
-        return recognizedText.substring(recognizedText.lastIndexOf("\n") + 1);
+        val strings = ArrayList<String>(rectangles.size)
+        rectangles.forEach({rectangle ->
+            val origin = rectangle[1] as Point
+            val againstVertix = rectangle[3] as Point
+            val x = origin.x
+            val y = origin.y
+            val width = againstVertix.x - origin.x
+            val height = againstVertix.y - origin.y
+            baseApi.setRectangle(x.toInt(), y.toInt(), width.toInt(), height.toInt())
+            val recognizedText = baseApi.utF8Text as String
+            strings.add(recognizedText)
+        })
+        return strings
     }
 
-    fun textRectangles(mat: Mat) : List<Array<Point?>> {
+    private fun textRectangles(mat: Mat) : List<Array<Point?>> {
         Imgproc.cvtColor(mat, mat, Imgproc.COLOR_RGBA2RGB);
 
         val scoreThresh = 0.5f
