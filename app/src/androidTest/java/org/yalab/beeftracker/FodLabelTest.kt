@@ -18,15 +18,17 @@ class FodLabelTest {
         context = InstrumentationRegistry.getInstrumentation().targetContext
     }
 
+    fun foodLabel(filename: String) : FoodLabel {
+        return FoodLabel(context, context.assets.open(filename))
+    }
+
     @Test
     fun foodLabelPNG() {
-        val foodLabel = FoodLabel(context, context.assets.open("image.png"))
-        assertEquals(listOf("|72ARF", "890 \\"), foodLabel.texts)
+        assertEquals(listOf("|72ARF", "890 \\"), foodLabel("image.png").texts)
     }
 
     @Test
     fun foodLabelJPG() {
-        val foodLabel = FoodLabel(context, context.assets.open("image.jpg"))
-        assertEquals(listOf(", 1 - ,\nflﬁiﬂz‘ﬂ'lﬁﬁ\n1490915461"), foodLabel.texts)
+        assertEquals(listOf(", 1 - ,\nflﬁiﬂz‘ﬂ'lﬁﬁ\n1490915461"), foodLabel("image.jpg").texts)
     }
 }
