@@ -18,7 +18,8 @@ class NLBC {
                       val breed: String)
 
     fun fetch(beefTrackingNumber: String): String {
-        val response = Jsoup.connect(AGREEMENT_URL).method(Connection.Method.GET).followRedirects(false).execute()
+        val c = Jsoup.connect(AGREEMENT_URL)
+            val response = c.method(Connection.Method.GET).followRedirects(false).execute()
 
         var connection = Jsoup.connect(ACTION_URL).cookies(response.cookies())
         val inputs = Jsoup.parse(response.body()).select("input")
