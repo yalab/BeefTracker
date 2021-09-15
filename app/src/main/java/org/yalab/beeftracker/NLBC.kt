@@ -14,12 +14,12 @@ class NLBC {
     data class Cattle(val trackingNumber: String,
                       val birthDay: String,
                       val gender: String,
-                      val motherBirthDay: String,
+                      val motherTrackingNumber: String,
                       val breed: String)
-
-    fun fetch(beefTrackingNumber: String): String {
+    var cattle: Cattle = Cattle("", "", "", "", "")
+    fun fetch(beefTrackingNumber: String) {
         val c = Jsoup.connect(AGREEMENT_URL)
-            val response = c.method(Connection.Method.GET).followRedirects(false).execute()
+        val response = c.method(Connection.Method.GET).followRedirects(false).execute()
 
         var connection = Jsoup.connect(ACTION_URL).cookies(response.cookies())
         val inputs = Jsoup.parse(response.body()).select("input")
@@ -38,7 +38,7 @@ class NLBC {
         })
         connection2.data(INPUT_NAME, beefTrackingNumber).method(Connection.Method.POST)
         val response3 = connection2.execute()
-        return response3.body()
+        parse(response3.body())
     }
 
     fun parse(html: String) {
@@ -47,7 +47,6 @@ class NLBC {
         val tr = table.select("tr:nth-child(2)")
         val c = ArrayList<String>(5)
         tr.select("td").forEach({ td -> c.add(td.text()) })
-        val cattle = Cattle(c[0], c[1], c[2], c[3], c[4])
-        println(jsoup)
+        this.cattle = Cattle(c[0], c[1], c[2], c[3], c[4])
     }
 }

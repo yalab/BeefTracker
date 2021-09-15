@@ -28,8 +28,13 @@ class NLBCTest {
         mockJsoup(NLBC.AGREEMENT_URL, "agreement.html")
         mockJsoup(NLBC.ACTION_URL, "action.html")
         mockJsoup(NLBC.SEARCH_URL, "search.html")
-        val responseBody = nlbc.fetch("1490915461")
-        println(responseBody)
+        nlbc.fetch("1490915461")
+        val cattle = nlbc.cattle
+        assertEquals("1490915461", cattle.trackingNumber)
+        assertEquals("2019.11.20", cattle.birthDay)
+        assertEquals("去勢（雄）", cattle.gender)
+        assertEquals("1474113579", cattle.motherTrackingNumber)
+        assertEquals("ホルスタイン種", cattle.breed)
     }
 
     private fun mockJsoup(url: String, resourceName: String) {
@@ -43,10 +48,4 @@ class NLBCTest {
         Mockito.`when`(fakeAction.cookies(Mockito.anyMap())).thenReturn(fakeAction)
         Mockito.`when`(Jsoup.parse(Mockito.anyString())).thenCallRealMethod()
     }
-//    @Test
-//    fun parseTest() {
-//        val path = javaClass.classsLoader.getResource("index.html").path
-//        val html = File(path).readText()
-//        nlbc.parse(html)
-//    }
 }
