@@ -9,4 +9,10 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <string name="tracking_number">個体識別番号</string>
+    <string name="birth_day">出生の年月日</string>
+    <string name="gender">雌雄の別</string>
+    <string name="mother_tracking_number">母牛の個体識別番号</string>
+    <string name="breed">種別</string>
 </resources>
