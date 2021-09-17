@@ -1,7 +1,6 @@
 package org.yalab.beeftracker
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,9 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.coroutines.*
-import org.opencv.android.Utils
-import org.opencv.core.*
-import org.opencv.imgproc.Imgproc
 import org.yalab.beeftracker.databinding.FragmentFirstBinding
 
 
@@ -56,8 +52,12 @@ class FirstFragment : Fragment() {
                 nlbc.fetch(foodLabel.beefTrackingNumber())
             }
             deferred.await()
-            binding.trackingNumber.text = nlbc.cattle.trackingNumber
-            binding.birthDay.text = nlbc.cattle.birthDay
+            val cattle = nlbc.cattle
+            binding.trackingNumber.text = cattle.trackingNumber
+            binding.birthDay.text = cattle.birthDay
+            binding.gender.text = cattle.gender
+            binding.motherTrackingNumber.text = cattle.motherTrackingNumber
+            binding.breed.text = cattle.breed
         }
     }
 
