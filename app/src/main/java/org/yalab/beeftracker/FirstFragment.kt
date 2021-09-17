@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import kotlinx.coroutines.*
 import org.opencv.android.Utils
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
@@ -34,18 +35,29 @@ class FirstFragment : Fragment() {
         var bmp = BitmapFactory.decodeStream(image2)
         binding.imageView.setImageBitmap(bmp)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonFirst.setOnClickListener {
-            val context = context as Context
-            val image2 = context.assets.open("image.jpg")
-            val foodLabel = FoodLabel(context, image2)
-            val texts = foodLabel.texts
-            binding.imageView.setImageBitmap(foodLabel.bitmap)
+            renderCattleInfo()
+        }
+    }
+
+    fun renderCattleInfo() = runBlocking {
+        val context = context as Context
+        val image2 = context.assets.open("image.jpg")
+        val foodLabel = FoodLabel(context, image2)
+        binding.imageView.setImageBitmap(foodLabel.bitmap)
+        launch {
+            val nlbc = NLBC()
+            val deferred = async(Dispatchers.IO) {
+                nlbc.fetch(foodLabel.beefTrackingNumber())
+            }
+            deferred.await()
+            binding.trackingNumber.text = nlbc.cattle.trackingNumber
+            binding.birthDay.text = nlbc.cattle.birthDay
         }
     }
 
