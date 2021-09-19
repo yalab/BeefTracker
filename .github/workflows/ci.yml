@@ -3,20 +3,41 @@ name: Android CI
 on: [push, pull_request]
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-    - name: set up JDK 11
+    - id: setup-java
+      name: set up JDK 11
       uses: actions/setup-java@v2
+      env:
+        JAVA_HOME: '/opt/java'
       with:
         java-version: '11'
         distribution: 'adopt'
         cache: gradle
-
+    - name: add path
+      run: export PATH="$JAVA_HOME/bin:$PATH"
+      env:
+        JAVA_HOME: "${{ steps.setup-java.outputs.path }}"
+    - name: Install sdkmanager
+      run: wget -P /opt/android https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip && cd /opt/android && unzip commandlinetools-linux-7583922_latest.zip
+    - name: Agreement Android Licenses
+      run: yes | /opt/android/cmdline-tools/bin/sdkmanager --licenses --sdk_root=/opt/android/sdk || true
+      env:
+        JAVA_HOME: "${{ steps.setup-java.outputs.path }}"
+    - name: Install Android SDK
+      run: /opt/android/cmdline-tools/bin/sdkmanager "platform-tools" "platforms;android-30" --sdk_root=$ANDROID_HOME && export PATH=$ANDROID_HOME/platform-tools:$PATH
+      env:
+        JAVA_HOME: "${{ steps.setup-java.outputs.path }}"
+        ANDROID_HOME: /opt/android/sdk
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build
+    - name: Test with Gradle
+      run: ./gradlew test
+      env:
+        JAVA_HOME: "${{ steps.setup-java.outputs.path }}"
+        ANDROID_HOME: /opt/android/sdk
+        JAVA_OPTS: -Xms1536m
