@@ -22,13 +22,22 @@ jobs:
       run: export PATH="$JAVA_HOME/bin:$PATH"
       env:
         JAVA_HOME: "${{ steps.setup-java.outputs.path }}"
+    - uses: actions/cache@v2
+      id: cache
+      with:
+        path: /opt/android
+        key: "java-11-android-30-toolchain-7583922"
+
     - name: Install sdkmanager
+      if: steps.cache.outputs.cache-hit != 'true'
       run: wget -P /opt/android https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip && cd /opt/android && unzip commandlinetools-linux-7583922_latest.zip
     - name: Agreement Android Licenses
+      if: steps.cache.outputs.cache-hit != 'true'
       run: yes | /opt/android/cmdline-tools/bin/sdkmanager --licenses --sdk_root=/opt/android/sdk || true
       env:
         JAVA_HOME: "${{ steps.setup-java.outputs.path }}"
     - name: Install Android SDK
+      if: steps.cache.outputs.cache-hit != 'true'
       run: /opt/android/cmdline-tools/bin/sdkmanager "platform-tools" "platforms;android-30" --sdk_root=$ANDROID_HOME && export PATH=$ANDROID_HOME/platform-tools:$PATH
       env:
         JAVA_HOME: "${{ steps.setup-java.outputs.path }}"
