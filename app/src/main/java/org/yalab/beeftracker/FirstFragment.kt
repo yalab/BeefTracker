@@ -2,12 +2,16 @@ package org.yalab.beeftracker
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.graphics.ImageFormat
 import android.os.Bundle
 import android.util.Log
+import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
@@ -15,6 +19,7 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_first.*
 import kotlinx.coroutines.*
 import org.yalab.beeftracker.databinding.FragmentFirstBinding
+import java.io.ByteArrayInputStream
 
 
 /**
@@ -24,7 +29,7 @@ class FirstFragment : Fragment() {
     companion object {
         private const val TAG = "CameraXBasic"
     }
-
+    private var imageCapture: ImageCapture? = null
     private var _binding: FragmentFirstBinding? = null
     var step = 0
 
@@ -92,7 +97,18 @@ class FirstFragment : Fragment() {
                 .also {
                     it.setSurfaceProvider(viewFinder.surfaceProvider)
                 }
+            imageCapture = ImageCapture.Builder()
+                .build()
+            val imageAnalysis = ImageAnalysis.Builder()
+                .setTargetResolution(Size(1280, 720))
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
 
+            imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), ImageAnalysis.Analyzer { image ->
+                if(image.format == ImageFormat.YUV_420_888) {
+                    println(image)
+                }
+            })
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
@@ -102,7 +118,7 @@ class FirstFragment : Fragment() {
 
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview)
+                    this, cameraSelector, imageAnalysis, preview)
 
             } catch(exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
