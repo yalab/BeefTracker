@@ -14,9 +14,9 @@ import org.opencv.dnn.Net
 import org.opencv.imgproc.Imgproc
 import org.opencv.utils.Converters
 
-class FoodLabel constructor(_context: Context, inputStream: InputStream) {
-    val bitmap: Bitmap
-    val texts: List<String>
+class FoodLabel constructor(_context: Context) {
+    lateinit var bitmap: Bitmap
+    lateinit var texts: List<String>
 
     private val context: Context
     private val dnnNet: Net
@@ -50,6 +50,9 @@ class FoodLabel constructor(_context: Context, inputStream: InputStream) {
         }
         OpenCVLoader.initDebug();
         dnnNet = Dnn.readNetFromTensorflow(pbFile.path)
+    }
+
+    constructor(_context: Context, inputStream: InputStream): this(_context) {
         val mat = Mat()
         Utils.bitmapToMat(BitmapFactory.decodeStream(inputStream), mat)
         val rectangles = textRectangles(mat)
