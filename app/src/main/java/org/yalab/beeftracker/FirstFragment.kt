@@ -27,25 +27,25 @@ class FirstFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
-        val image2 = (context as Context).assets.open("image.jpg")
-        var bmp = BitmapFactory.decodeStream(image2)
-        binding.imageView.setImageBitmap(bmp)
+//        val image2 = (context as Context).assets.open("image.jpg")
+//        var bmp = BitmapFactory.decodeStream(image2)
+//        binding.imageView.setImageBitmap(bmp)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.buttonFirst.setOnClickListener {
-            renderCattleInfo()
-        }
+//        binding.buttonFirst.setOnClickListener {
+//            renderCattleInfo()
+//        }
     }
 
     fun renderCattleInfo() = runBlocking {
         val context = context as Context
         val image2 = context.assets.open("image.jpg")
         val foodLabel = FoodLabel(context, image2)
-        binding.imageView.setImageBitmap(foodLabel.bitmap)
+//        binding.imageView.setImageBitmap(foodLabel.bitmap)
         launch {
             val nlbc = NLBC()
             val deferred = async(Dispatchers.IO) {
