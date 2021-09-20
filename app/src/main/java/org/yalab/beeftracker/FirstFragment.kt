@@ -3,10 +3,16 @@ package org.yalab.beeftracker
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.fragment_first.*
 import kotlinx.coroutines.*
 import org.yalab.beeftracker.databinding.FragmentFirstBinding
 
@@ -15,6 +21,10 @@ import org.yalab.beeftracker.databinding.FragmentFirstBinding
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
 class FirstFragment : Fragment() {
+    companion object {
+        private const val TAG = "CameraXBasic"
+    }
+
     private var _binding: FragmentFirstBinding? = null
     var step = 0
 
@@ -39,6 +49,9 @@ class FirstFragment : Fragment() {
 //        binding.buttonFirst.setOnClickListener {
 //            renderCattleInfo()
 //        }
+        binding.cameraCaptureButton.setOnClickListener {
+            startCamera()
+        }
     }
 
     fun renderCattleInfo() = runBlocking {
@@ -65,4 +78,38 @@ class FirstFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    private fun startCamera() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+
+        cameraProviderFuture.addListener(Runnable {
+            // Used to bind the lifecycle of cameras to the lifecycle owner
+            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+
+            // Preview
+            val preview = Preview.Builder()
+                .build()
+                .also {
+                    it.setSurfaceProvider(viewFinder.surfaceProvider)
+                }
+
+            // Select back camera as a default
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+            try {
+                // Unbind use cases before rebinding
+                cameraProvider.unbindAll()
+
+                // Bind use cases to camera
+                cameraProvider.bindToLifecycle(
+                    this, cameraSelector, preview)
+
+            } catch(exc: Exception) {
+                Log.e(TAG, "Use case binding failed", exc)
+            }
+
+        }, ContextCompat.getMainExecutor(requireContext()))
+
+    }
+
 }
