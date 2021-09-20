@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory
 import android.graphics.ImageFormat
 import android.os.Bundle
 import android.util.Log
-import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +18,6 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_first.*
 import kotlinx.coroutines.*
 import org.yalab.beeftracker.databinding.FragmentFirstBinding
-import java.io.ByteArrayInputStream
 
 
 /**
@@ -42,9 +40,9 @@ class FirstFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
-//        val image2 = (context as Context).assets.open("image.jpg")
-//        var bmp = BitmapFactory.decodeStream(image2)
-//        binding.imageView.setImageBitmap(bmp)
+        val image2 = (context as Context).assets.open("image.jpg")
+        var bmp = BitmapFactory.decodeStream(image2)
+        binding.imageView.setImageBitmap(bmp)
         return binding.root
     }
 
@@ -100,13 +98,17 @@ class FirstFragment : Fragment() {
             imageCapture = ImageCapture.Builder()
                 .build()
             val imageAnalysis = ImageAnalysis.Builder()
-                .setTargetResolution(Size(1280, 720))
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
-
             imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), ImageAnalysis.Analyzer { image ->
                 if(image.format == ImageFormat.YUV_420_888) {
-                    println(image)
+                    val foodLabel = FoodLabel(requireContext(), image)
+                    val number = foodLabel.beefTrackingNumber()
+                    binding.imageView.setImageBitmap(foodLabel.bitmap)
+                    if(number.length > 9) {
+                        binding.trackingNumber.text = number
+                        println(number)
+                    }
                 }
             })
             // Select back camera as a default
@@ -127,5 +129,4 @@ class FirstFragment : Fragment() {
         }, ContextCompat.getMainExecutor(requireContext()))
 
     }
-
 }

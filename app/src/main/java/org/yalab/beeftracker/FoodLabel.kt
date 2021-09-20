@@ -3,6 +3,9 @@ package org.yalab.beeftracker
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.Image
+import androidx.camera.core.ImageProxy
+import com.example.android.camera.utils.YuvToRgbConverter
 import com.googlecode.tesseract.android.TessBaseAPI
 import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
@@ -17,10 +20,12 @@ import org.opencv.utils.Converters
 class FoodLabel constructor(_context: Context) {
     lateinit var bitmap: Bitmap
     lateinit var texts: List<String>
+    private lateinit var bitmapBuffer: Bitmap
 
     private val context: Context
     private val dnnNet: Net
     private val baseApi: TessBaseAPI
+    private val mat: Mat
     companion object {
         val REG_TRACKNING_NUMBER = Regex("""\d{10}""")
     }
@@ -50,16 +55,27 @@ class FoodLabel constructor(_context: Context) {
         }
         OpenCVLoader.initDebug();
         dnnNet = Dnn.readNetFromTensorflow(pbFile.path)
+        mat = Mat()
     }
 
     constructor(_context: Context, inputStream: InputStream): this(_context) {
-        val mat = Mat()
         Utils.bitmapToMat(BitmapFactory.decodeStream(inputStream), mat)
+        renderTextRectangles()
+    }
+
+    constructor(_context: Context, image: ImageProxy): this(_context) {
+        bitmapBuffer = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
+        image.use { YuvToRgbConverter(_context).yuvToRgb(image.image!!, bitmapBuffer) }
+        Utils.bitmapToMat(bitmapBuffer, mat)
+        renderTextRectangles()
+    }
+
+    fun renderTextRectangles() {
         val rectangles = textRectangles(mat)
         val green = Scalar(0.0, 255.0, 0.0)
         rectangles.forEach({vertices ->
             for (j in 0..3) {
-                Imgproc.line(mat, vertices[j], vertices[(j + 1) % 4], green, 10)
+                Imgproc.line(mat, vertices[j], vertices[(j + 1) % 4], green, 5)
             }
         })
         texts = recognize(mat, rectangles)
@@ -69,6 +85,7 @@ class FoodLabel constructor(_context: Context) {
 
     fun beefTrackingNumber(): String {
         texts.forEach({ text ->
+            println(text)
             val match = REG_TRACKNING_NUMBER.find(text)
             if(match != null) {
                 return match.value
@@ -122,7 +139,10 @@ class FoodLabel constructor(_context: Context) {
         val geometry = outs[1].reshape(1, 5 * h)
 
         val (boxesList, confidencesList) = decodeRectangles(scores, geometry, scoreThresh)
-
+        if(confidencesList.size < 1) {
+            // FIXME: add Test.
+            return ArrayList<Array<Point?>>(0)
+        }
         val confidences = MatOfFloat(Converters.vector_float_to_Mat(confidencesList))
         val boxesArray = boxesList.toTypedArray()
         val boxes = MatOfRotatedRect(*boxesArray)
