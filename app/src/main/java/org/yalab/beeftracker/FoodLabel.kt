@@ -79,13 +79,13 @@ class FoodLabel constructor(_context: Context) {
             }
         })
         texts = recognize(mat, rectangles)
+        println(texts)
         bitmap = Bitmap.createBitmap(mat.width(), mat.height(), Bitmap.Config.ARGB_8888)
         Utils.matToBitmap(mat, bitmap)
     }
 
     fun beefTrackingNumber(): String {
         texts.forEach({ text ->
-            println(text)
             val match = REG_TRACKNING_NUMBER.find(text)
             if(match != null) {
                 return match.value

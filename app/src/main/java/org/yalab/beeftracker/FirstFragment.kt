@@ -1,11 +1,14 @@
 package org.yalab.beeftracker
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageFormat
+import android.graphics.Matrix
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Surface
 import android.view.View
 import android.view.ViewGroup
 import androidx.camera.core.CameraSelector
@@ -28,6 +31,7 @@ class FirstFragment : Fragment() {
         private const val TAG = "CameraXBasic"
     }
     private var imageCapture: ImageCapture? = null
+    private var imageAnalysis: ImageAnalysis? = null
     private var _binding: FragmentFirstBinding? = null
     var step = 0
 
@@ -84,7 +88,12 @@ class FirstFragment : Fragment() {
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
-
+        imageCapture = ImageCapture.Builder()
+            .build()
+        imageAnalysis = ImageAnalysis.Builder()
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .setTargetRotation(Surface.ROTATION_270)
+            .build()
         cameraProviderFuture.addListener(Runnable {
             // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
@@ -95,16 +104,14 @@ class FirstFragment : Fragment() {
                 .also {
                     it.setSurfaceProvider(viewFinder.surfaceProvider)
                 }
-            imageCapture = ImageCapture.Builder()
-                .build()
-            val imageAnalysis = ImageAnalysis.Builder()
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .build()
-            imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), ImageAnalysis.Analyzer { image ->
+            imageAnalysis!!.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), ImageAnalysis.Analyzer { image ->
                 if(image.format == ImageFormat.YUV_420_888) {
                     val foodLabel = FoodLabel(requireContext(), image)
                     val number = foodLabel.beefTrackingNumber()
-                    binding.imageView.setImageBitmap(foodLabel.bitmap)
+                    val matrix = Matrix()
+                    matrix.postRotate(90.0f)
+                    val rotated = Bitmap.createBitmap(foodLabel.bitmap, 0, 0, foodLabel.bitmap.width, foodLabel.bitmap.height, matrix, true);
+                    binding.imageView.setImageBitmap(rotated)
                     if(number.length > 9) {
                         binding.trackingNumber.text = number
                         println(number)
@@ -127,6 +134,5 @@ class FirstFragment : Fragment() {
             }
 
         }, ContextCompat.getMainExecutor(requireContext()))
-
     }
 }
