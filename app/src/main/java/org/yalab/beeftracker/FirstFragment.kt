@@ -32,6 +32,7 @@ class FirstFragment : Fragment() {
     }
     private var imageCapture: ImageCapture? = null
     private var imageAnalysis: ImageAnalysis? = null
+    private var foodLabel: FoodLabel? = null
     private var _binding: FragmentFirstBinding? = null
     var step = 0
 
@@ -106,11 +107,14 @@ class FirstFragment : Fragment() {
                 }
             imageAnalysis!!.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), ImageAnalysis.Analyzer { image ->
                 if(image.format == ImageFormat.YUV_420_888) {
-                    val foodLabel = FoodLabel(requireContext(), image)
-                    val number = foodLabel.beefTrackingNumber()
+                    if(foodLabel == null) {
+                        foodLabel = FoodLabel(requireContext(), image)
+                    }
+                    foodLabel!!.nextFrame(image)
+                    val number = foodLabel!!.beefTrackingNumber()
                     val matrix = Matrix()
                     matrix.postRotate(90.0f)
-                    val rotated = Bitmap.createBitmap(foodLabel.bitmap, 0, 0, foodLabel.bitmap.width, foodLabel.bitmap.height, matrix, true);
+                    val rotated = Bitmap.createBitmap(foodLabel!!.bitmap, 0, 0, foodLabel!!.bitmap.width, foodLabel!!.bitmap.height, matrix, true);
                     binding.imageView.setImageBitmap(rotated)
                     if(number.length > 9) {
                         binding.trackingNumber.text = number

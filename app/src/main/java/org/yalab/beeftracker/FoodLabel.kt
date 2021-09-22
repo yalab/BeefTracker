@@ -65,7 +65,10 @@ class FoodLabel constructor(_context: Context) {
 
     constructor(_context: Context, image: ImageProxy): this(_context) {
         bitmapBuffer = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
-        image.use { YuvToRgbConverter(_context).yuvToRgb(image.image!!, bitmapBuffer) }
+    }
+
+    fun nextFrame(image: ImageProxy) {
+        image.use { YuvToRgbConverter(  context).yuvToRgb(image.image!!, bitmapBuffer) }
         Utils.bitmapToMat(bitmapBuffer, mat)
         renderTextRectangles()
     }
