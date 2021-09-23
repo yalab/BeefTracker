@@ -92,7 +92,7 @@ class FirstFragment : Fragment() {
         imageCapture = ImageCapture.Builder()
             .build()
         imageAnalysis = ImageAnalysis.Builder()
-            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_BLOCK_PRODUCER)
             .setTargetRotation(Surface.ROTATION_270)
             .build()
         cameraProviderFuture.addListener(Runnable {
