@@ -43,11 +43,7 @@ class FoodLabel constructor(_context: Context) {
         }
         baseApi = TessBaseAPI()
         baseApi.init(context.filesDir.toString(), "eng")
-        baseApi.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST, "!?@#$%&*()[]<>_-+=/:;'\"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
-        baseApi.setVariable("classify_bln_numeric_mode", "1");
-
         // https://www.dropbox.com/s/r2ingd0l3zt8hxs/frozen_east_text_detection.tar.gz?dl=1
-
         val pbFileName = "frozen_east_text_detection.pb"
         val pbFile = File(context.filesDir, pbFileName)
         if(!pbFile.exists()) {

@@ -24,12 +24,12 @@ class FoodLabelTest {
 
     @Test
     fun foodLabelPNG() {
-        assertEquals(listOf("|72ARF", "890 \\"), foodLabel("image.png").texts)
+        assertEquals(listOf("173456", "890 \\"), foodLabel("image.png").texts)
     }
 
     @Test
     fun foodLabelJPG() {
-        assertEquals(listOf(", 1 - ,\nflﬁiﬂz‘ﬂ'lﬁﬁ\n1490915461"), foodLabel("image.jpg").texts)
+        assertEquals(listOf("|l ,_\nflﬁiﬁﬁﬂ'lﬁﬁ\n1490915461"), foodLabel("image.jpg").texts)
     }
 
     @Test
