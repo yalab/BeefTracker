@@ -44,12 +44,14 @@ class FoodLabel constructor(_context: Context) {
         baseApi.init(context.filesDir.toString(), "eng")
         // https://www.dropbox.com/s/r2ingd0l3zt8hxs/frozen_east_text_detection.tar.gz?dl=1
         val pbFileName = "frozen_east_text_detection.pb"
-        OpenCVLoader.initDebug()
-        val src = context.assets.open(pbFileName)
-        val fileBytes = ByteArray(src.available())
-        src.read(fileBytes)
-        src.close()
-        dnnNet = Dnn.readNetFromTensorflow(MatOfByte(*fileBytes))
+        val pbFile = File(context.filesDir, pbFileName)
+        if(!pbFile.exists()) {
+            val src = context.assets.open(pbFileName)
+            pbFile.createNewFile()
+            pbFile.outputStream().use { it.write(src.readBytes()) }
+        }
+        OpenCVLoader.initDebug();
+        dnnNet = Dnn.readNetFromTensorflow(pbFile.path)
         mat = Mat()
     }
 
