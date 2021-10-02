@@ -3,19 +3,18 @@ package org.yalab.beeftracker
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.media.Image
 import androidx.camera.core.ImageProxy
 import com.example.android.camera.utils.YuvToRgbConverter
 import com.googlecode.tesseract.android.TessBaseAPI
 import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
-import java.io.File
-import java.io.InputStream
 import org.opencv.core.*
 import org.opencv.dnn.Dnn
 import org.opencv.dnn.Net
 import org.opencv.imgproc.Imgproc
 import org.opencv.utils.Converters
+import java.io.File
+import java.io.InputStream
 
 class FoodLabel constructor(_context: Context) {
     lateinit var bitmap: Bitmap
@@ -45,14 +44,12 @@ class FoodLabel constructor(_context: Context) {
         baseApi.init(context.filesDir.toString(), "eng")
         // https://www.dropbox.com/s/r2ingd0l3zt8hxs/frozen_east_text_detection.tar.gz?dl=1
         val pbFileName = "frozen_east_text_detection.pb"
-        val pbFile = File(context.filesDir, pbFileName)
-        if(!pbFile.exists()) {
-            val src = context.assets.open(pbFileName)
-            pbFile.createNewFile()
-            pbFile.outputStream().use { it.write(src.readBytes()) }
-        }
-        OpenCVLoader.initDebug();
-        dnnNet = Dnn.readNetFromTensorflow(pbFile.path)
+        OpenCVLoader.initDebug()
+        val src = context.assets.open(pbFileName)
+        val fileBytes = ByteArray(src.available())
+        src.read(fileBytes)
+        src.close()
+        dnnNet = Dnn.readNetFromTensorflow(MatOfByte(*fileBytes))
         mat = Mat()
     }
 
