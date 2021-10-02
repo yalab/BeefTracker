@@ -13,6 +13,6 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
-          script: ./gradlew test connectedCheck
+          script: ./gradlew connectedCheck --debug
         env:
           JAVA_OPTS: "-Xms512m -Xmx512m"
