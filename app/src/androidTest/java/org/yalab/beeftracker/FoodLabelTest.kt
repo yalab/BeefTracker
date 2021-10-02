@@ -26,19 +26,19 @@ class FoodLabelTest {
     fun foodLabelPNG() {
         assertEquals(listOf("173456", "890 \\"), foodLabel("image.png").texts)
     }
-
-    @Test
-    fun foodLabelJPG() {
-        assertEquals(listOf("|l ,_\nflﬁiﬁﬁﬂ'lﬁﬁ\n1490915461"), foodLabel("image.jpg").texts)
-    }
-
-    @Test
-    fun beefTrackingNumberPNG() {
-        assertEquals("", foodLabel("image.png").beefTrackingNumber())
-    }
-
-    @Test
-    fun beefTrackingNumberJPG() {
-        assertEquals("1490915461", foodLabel("image.jpg").beefTrackingNumber())
-    }
+//
+//    @Test
+//    fun foodLabelJPG() {
+//        assertEquals(listOf("|l ,_\nflﬁiﬁﬁﬂ'lﬁﬁ\n1490915461"), foodLabel("image.jpg").texts)
+//    }
+//
+//    @Test
+//    fun beefTrackingNumberPNG() {
+//        assertEquals("", foodLabel("image.png").beefTrackingNumber())
+//    }
+//
+//    @Test
+//    fun beefTrackingNumberJPG() {
+//        assertEquals("1490915461", foodLabel("image.jpg").beefTrackingNumber())
+//    }
 }
