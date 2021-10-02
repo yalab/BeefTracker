@@ -13,4 +13,3 @@
 .externalNativeBuild
 .cxx
 local.properties
-/app/src/main/assets/frozen_east_text_detection.pb
