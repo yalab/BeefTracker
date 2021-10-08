@@ -23,9 +23,14 @@ class FoodLabelTest {
     }
 
     @Test
-    fun foodLabelPNG() {
-        assertEquals(listOf("173456", "890 \\"), foodLabel("image.png").texts)
+    fun packageName() {
+        assertEquals("org.yalab.beeftracker", context.packageName)
     }
+
+//    @Test
+//    fun foodLabelPNG() {
+//        assertEquals(listOf("173456", "890 \\"), foodLabel("image.png").texts)
+//    }
 //
 //    @Test
 //    fun foodLabelJPG() {
