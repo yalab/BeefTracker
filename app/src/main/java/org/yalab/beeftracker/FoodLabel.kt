@@ -79,7 +79,9 @@ class FoodLabel constructor(_context: Context) {
             }
         })
         texts = recognize(mat, rectangles)
-        println(texts)
+        if(texts.size > 0) {
+            println(texts)
+        }
         bitmap = Bitmap.createBitmap(mat.width(), mat.height(), Bitmap.Config.ARGB_8888)
         Utils.matToBitmap(mat, bitmap)
     }

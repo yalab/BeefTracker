@@ -95,16 +95,12 @@ class FirstFragment : Fragment() {
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_BLOCK_PRODUCER)
             .setTargetRotation(Surface.ROTATION_270)
             .build()
+        val preview = Preview.Builder()
+            .build()
+            .also { it.setSurfaceProvider(viewFinder.surfaceProvider) }
         cameraProviderFuture.addListener(Runnable {
             // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-
-            // Preview
-            val preview = Preview.Builder()
-                .build()
-                .also {
-                    it.setSurfaceProvider(viewFinder.surfaceProvider)
-                }
             imageAnalysis!!.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), ImageAnalysis.Analyzer { image ->
                 if(image.format == ImageFormat.YUV_420_888) {
                     if(foodLabel == null) {
@@ -112,31 +108,24 @@ class FirstFragment : Fragment() {
                     }
                     foodLabel!!.nextFrame(image)
                     val number = foodLabel!!.beefTrackingNumber()
-                    val matrix = Matrix()
-                    matrix.postRotate(90.0f)
-                    val rotated = Bitmap.createBitmap(foodLabel!!.bitmap, 0, 0, foodLabel!!.bitmap.width, foodLabel!!.bitmap.height, matrix, true);
-                    binding.imageView.setImageBitmap(rotated)
+//                    val matrix = Matrix()
+//                    matrix.postRotate(90.0f)
+//                    val rotated = Bitmap.createBitmap(foodLabel!!.bitmap, 0, 0, foodLabel!!.bitmap.width, foodLabel!!.bitmap.height, matrix, true);
+                    binding.imageView.setImageBitmap(foodLabel!!.bitmap)
                     if(number.length > 9) {
                         binding.trackingNumber.text = number
                         println(number)
                     }
                 }
             })
-            // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
             try {
-                // Unbind use cases before rebinding
                 cameraProvider.unbindAll()
-
-                // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
                     this, cameraSelector, imageAnalysis, preview)
-
             } catch(exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
-
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 }
