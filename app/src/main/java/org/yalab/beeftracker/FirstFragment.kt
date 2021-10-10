@@ -99,7 +99,6 @@ class FirstFragment : Fragment() {
             .build()
             .also { it.setSurfaceProvider(viewFinder.surfaceProvider) }
         cameraProviderFuture.addListener(Runnable {
-            // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
             imageAnalysis!!.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), ImageAnalysis.Analyzer { image ->
                 if(image.format == ImageFormat.YUV_420_888) {
@@ -108,9 +107,6 @@ class FirstFragment : Fragment() {
                     }
                     foodLabel!!.nextFrame(image)
                     val number = foodLabel!!.beefTrackingNumber()
-//                    val matrix = Matrix()
-//                    matrix.postRotate(90.0f)
-//                    val rotated = Bitmap.createBitmap(foodLabel!!.bitmap, 0, 0, foodLabel!!.bitmap.width, foodLabel!!.bitmap.height, matrix, true);
                     binding.imageView.setImageBitmap(foodLabel!!.bitmap)
                     if(number.length > 9) {
                         binding.trackingNumber.text = number
