@@ -3,6 +3,7 @@ package org.yalab.beeftracker
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import androidx.camera.core.ImageProxy
 import com.example.android.camera.utils.YuvToRgbConverter
 import com.googlecode.tesseract.android.TessBaseAPI
@@ -19,7 +20,6 @@ import java.io.InputStream
 class FoodLabel constructor(_context: Context) {
     lateinit var bitmap: Bitmap
     lateinit var texts: List<String>
-    private lateinit var bitmapBuffer: Bitmap
 
     private val context: Context
     private val dnnNet: Net
@@ -61,12 +61,15 @@ class FoodLabel constructor(_context: Context) {
     }
 
     constructor(_context: Context, image: ImageProxy): this(_context) {
-        bitmapBuffer = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
     }
 
     fun nextFrame(image: ImageProxy) {
-        image.use { YuvToRgbConverter(  context).yuvToRgb(image.image!!, bitmapBuffer) }
-        Utils.bitmapToMat(bitmapBuffer, mat)
+        val bitmap = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
+        image.use { YuvToRgbConverter(  context).yuvToRgb(image.image!!, bitmap) }
+        val matrix = Matrix()
+        matrix.postRotate(90.0f)
+        val rotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true);
+        Utils.bitmapToMat(rotated, mat)
         renderTextRectangles()
     }
 
