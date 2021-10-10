@@ -53,24 +53,17 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        binding.buttonFirst.setOnClickListener {
-//            renderCattleInfo()
-//        }
         binding.cameraCaptureButton.setOnClickListener {
             startCamera()
         }
     }
 
-    fun renderCattleInfo() = runBlocking {
+    fun renderCattleInfo(beefTrackingNumber: String) = runBlocking {
         val context = context as Context
-        val image2 = context.assets.open("image.jpg")
-        val foodLabel = FoodLabel(context, image2)
-//        binding.imageView.setImageBitmap(foodLabel.bitmap)
         launch {
             val nlbc = NLBC()
             val deferred = async(Dispatchers.IO) {
-                nlbc.fetch(foodLabel.beefTrackingNumber())
+                nlbc.fetch(beefTrackingNumber)
             }
             deferred.await()
             val cattle = nlbc.cattle
@@ -109,8 +102,8 @@ class FirstFragment : Fragment() {
                     val number = foodLabel!!.beefTrackingNumber()
                     binding.imageView.setImageBitmap(foodLabel!!.bitmap)
                     if(number.length > 9) {
-                        binding.trackingNumber.text = number
-                        println(number)
+                        renderCattleInfo(number)
+                        cameraProvider.unbindAll()
                     }
                 }
             })
