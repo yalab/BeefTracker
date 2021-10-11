@@ -45,9 +45,6 @@ class FirstFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
-        val image2 = (context as Context).assets.open("image.jpg")
-        var bmp = BitmapFactory.decodeStream(image2)
-        binding.imageView.setImageBitmap(bmp)
         return binding.root
     }
 
@@ -85,7 +82,7 @@ class FirstFragment : Fragment() {
         imageCapture = ImageCapture.Builder()
             .build()
         imageAnalysis = ImageAnalysis.Builder()
-            .setBackpressureStrategy(ImageAnalysis.STRATEGY_BLOCK_PRODUCER)
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .setTargetRotation(Surface.ROTATION_270)
             .build()
         val preview = Preview.Builder()
