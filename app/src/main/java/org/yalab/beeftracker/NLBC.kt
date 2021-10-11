@@ -50,7 +50,7 @@ class NLBC {
             tr.select("td").forEach({ td -> c.add(td.text()) })
             this.cattle = Cattle(c[0], c[1], c[2], c[3], c[4])
         } else {
-            this.cattle = Cattle(beefTrackingNumber, "該当する牛の情報はありません。", "", "", "")
+            this.cattle = Cattle(beefTrackingNumber, "該当する牛の情報は", "ありません。", "", "")
         }
     }
 }

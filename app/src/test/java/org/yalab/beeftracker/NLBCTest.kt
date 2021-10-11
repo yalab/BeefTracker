@@ -47,7 +47,8 @@ class NLBCTest {
         nlbc.fetch("0000000000")
         val cattle = nlbc.cattle
         assertEquals("0000000000", cattle.trackingNumber)
-        assertEquals("該当する牛の情報はありません。", cattle.birthDay)
+        assertEquals("該当する牛の情報は", cattle.birthDay)
+        assertEquals("ありません。", cattle.gender)
     }
 
     private fun mockJsoup(url: String, resourceName: String) {
