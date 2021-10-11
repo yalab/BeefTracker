@@ -38,15 +38,19 @@ class NLBC {
         })
         connection2.data(INPUT_NAME, beefTrackingNumber).method(Connection.Method.POST)
         val response3 = connection2.execute()
-        parse(response3.body())
+        parse(response3.body(), beefTrackingNumber)
     }
 
-    fun parse(html: String) {
+    fun parse(html: String, beefTrackingNumber: String) {
         val jsoup = Jsoup.parse(html)
         val table = jsoup.select("body > div > table:nth-child(1) > tbody > tr:nth-child(3) > td:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(2) > table > tbody > tr:nth-child(3) > td:nth-child(2) > table > tbody > tr > td > span > table:nth-child(4)")
-        val tr = table.select("tr:nth-child(2)")
-        val c = ArrayList<String>(5)
-        tr.select("td").forEach({ td -> c.add(td.text()) })
-        this.cattle = Cattle(c[0], c[1], c[2], c[3], c[4])
+        if(table.size > 0) {
+            val tr = table.select("tr:nth-child(2)")
+            val c = ArrayList<String>(5)
+            tr.select("td").forEach({ td -> c.add(td.text()) })
+            this.cattle = Cattle(c[0], c[1], c[2], c[3], c[4])
+        } else {
+            this.cattle = Cattle(beefTrackingNumber, "該当する牛の情報はありません。", "", "", "")
+        }
     }
 }

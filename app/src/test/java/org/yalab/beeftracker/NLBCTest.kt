@@ -37,6 +37,19 @@ class NLBCTest {
         assertEquals("ホルスタイン種", cattle.breed)
     }
 
+    @Test
+    @Throws(IOException::class)
+    fun notFoundTest() {
+        Mockito.mockStatic(Jsoup::class.java)
+        mockJsoup(NLBC.AGREEMENT_URL, "agreement.html")
+        mockJsoup(NLBC.ACTION_URL, "action.html")
+        mockJsoup(NLBC.SEARCH_URL, "notfound.html")
+        nlbc.fetch("0000000000")
+        val cattle = nlbc.cattle
+        assertEquals("0000000000", cattle.trackingNumber)
+        assertEquals("該当する牛の情報はありません。", cattle.birthDay)
+    }
+
     private fun mockJsoup(url: String, resourceName: String) {
         val fakeAction = Mockito.spy(HttpConnection())
         fakeAction.url("https://www.google.com/")
