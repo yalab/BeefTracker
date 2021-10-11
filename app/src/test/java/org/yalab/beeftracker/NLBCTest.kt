@@ -24,7 +24,7 @@ class NLBCTest {
     @Test
     @Throws(IOException::class)
     fun fetchTest() {
-        Mockito.mockStatic(Jsoup::class.java)
+        val mock = Mockito.mockStatic(Jsoup::class.java)
         mockJsoup(NLBC.AGREEMENT_URL, "agreement.html")
         mockJsoup(NLBC.ACTION_URL, "action.html")
         mockJsoup(NLBC.SEARCH_URL, "search.html")
@@ -35,12 +35,13 @@ class NLBCTest {
         assertEquals("去勢（雄）", cattle.gender)
         assertEquals("1474113579", cattle.motherTrackingNumber)
         assertEquals("ホルスタイン種", cattle.breed)
+        mock.close()
     }
 
     @Test
     @Throws(IOException::class)
     fun notFoundTest() {
-        Mockito.mockStatic(Jsoup::class.java)
+        val mock = Mockito.mockStatic(Jsoup::class.java)
         mockJsoup(NLBC.AGREEMENT_URL, "agreement.html")
         mockJsoup(NLBC.ACTION_URL, "action.html")
         mockJsoup(NLBC.SEARCH_URL, "notfound.html")
@@ -49,6 +50,7 @@ class NLBCTest {
         assertEquals("0000000000", cattle.trackingNumber)
         assertEquals("該当する牛の情報は", cattle.birthDay)
         assertEquals("ありません。", cattle.gender)
+        mock.close()
     }
 
     private fun mockJsoup(url: String, resourceName: String) {
