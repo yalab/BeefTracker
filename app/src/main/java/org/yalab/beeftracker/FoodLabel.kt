@@ -26,7 +26,7 @@ class FoodLabel constructor(_context: Context) {
     private val baseApi: TessBaseAPI
     private val mat: Mat
     private var _beefTrackingNumbers = mutableListOf<String>()
-    private val beefTrackingNumbers: List<String>
+    val beefTrackingNumbers: List<String>
     get() = _beefTrackingNumbers
     companion object {
         val REG_TRACKNING_NUMBER = Regex("""\d{10}""")
@@ -83,13 +83,7 @@ class FoodLabel constructor(_context: Context) {
                 Imgproc.line(mat, vertices[j], vertices[(j + 1) % 4], green, 5)
             }
         })
-        texts = recognize(mat, rectangles)
-        texts.forEach({ text ->
-            val match = REG_TRACKNING_NUMBER.find(text)
-            if(match != null) {
-                _beefTrackingNumbers.add(match.value)
-            }
-        })
+        addBeefTrackingNumbers(recognize(mat, rectangles))
         bitmap = Bitmap.createBitmap(mat.width(), mat.height(), Bitmap.Config.ARGB_8888)
         Utils.matToBitmap(mat, bitmap)
     }
@@ -220,5 +214,14 @@ class FoodLabel constructor(_context: Context) {
             }
         }
         return detections to confidences
+    }
+
+    private fun addBeefTrackingNumbers(texts: List<String>) {
+        texts.forEach({ text ->
+            val match = REG_TRACKNING_NUMBER.find(text)
+            if(match != null && _beefTrackingNumbers.indexOf(text) < 0) {
+                _beefTrackingNumbers.add(match.value)
+            }
+        })
     }
 }
