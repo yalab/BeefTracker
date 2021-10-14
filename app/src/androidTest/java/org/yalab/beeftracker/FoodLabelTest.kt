@@ -42,8 +42,8 @@ class FoodLabelTest {
 //        assertEquals("", foodLabel("image.png").beefTrackingNumber())
 //    }
 //
-    @Test
-    fun beefTrackingNumberJPG() {
-        assertEquals("1490915461", foodLabel("image.jpg").beefTrackingNumber())
-    }
+//    @Test
+//    fun beefTrackingNumberJPG() {
+//        assertEquals("1490915461", foodLabel("image.jpg").beefTrackingNumber())
+//    }
 }
