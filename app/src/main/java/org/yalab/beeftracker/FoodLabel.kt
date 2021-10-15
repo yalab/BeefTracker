@@ -89,7 +89,11 @@ class FoodLabel constructor(_context: Context) {
     }
 
     fun beefTrackingNumber(): String {
-        return beefTrackingNumbers.last()
+        if (!_beefTrackingNumbers.isEmpty()) {
+            return _beefTrackingNumbers.last()
+        } else {
+           return ""
+        }
     }
 
     protected fun finalize() {

@@ -57,4 +57,9 @@ class FoodLabelTest {
         method?.call(foodLabel, beefTrackingNumbers)
         assertEquals(listOf("1466716191") as List<String>, foodLabel.beefTrackingNumbers)
     }
+
+    @Test
+    fun emptyBeefTrackingNumber() {
+        assertEquals("", FoodLabel(context).beefTrackingNumber())
+    }
 }
