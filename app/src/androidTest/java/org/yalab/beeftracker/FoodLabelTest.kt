@@ -32,27 +32,27 @@ class FoodLabelTest {
         assertEquals("org.yalab.beeftracker", context.packageName)
     }
 
-    @Test
-    fun beefTrackingNumberPNG() {
-        assertEquals("", foodLabel("image.png").beefTrackingNumber())
-    }
-
-    @Test
-    fun beefTrackingNumberJPG() {
-        assertEquals("1490915461", foodLabel("image.jpg").beefTrackingNumber())
-    }
-
-    @Test
-    fun addBeefTrackingNumber() {
-        val beefTrackingNumbers: List<String> = listOf("1466716191", "1466716191")
-        val foodLabel = foodLabel()
-        val method = foodLabel::class.members.find{ it.name == "addBeefTrackingNumbers" }?.apply{ isAccessible = true }
-        method?.call(foodLabel, beefTrackingNumbers)
-        assertEquals(listOf("1466716191") as List<String>, foodLabel.beefTrackingNumbers)
-    }
-
-    @Test
-    fun emptyBeefTrackingNumber() {
-        assertEquals("", FoodLabel(context).beefTrackingNumber())
-    }
+//    @Test
+//    fun beefTrackingNumberPNG() {
+//        assertEquals("", foodLabel("image.png").beefTrackingNumber())
+//    }
+//
+//    @Test
+//    fun beefTrackingNumberJPG() {
+//        assertEquals("1490915461", foodLabel("image.jpg").beefTrackingNumber())
+//    }
+//
+//    @Test
+//    fun addBeefTrackingNumber() {
+//        val beefTrackingNumbers: List<String> = listOf("1466716191", "1466716191")
+//        val foodLabel = foodLabel()
+//        val method = foodLabel::class.members.find{ it.name == "addBeefTrackingNumbers" }?.apply{ isAccessible = true }
+//        method?.call(foodLabel, beefTrackingNumbers)
+//        assertEquals(listOf("1466716191") as List<String>, foodLabel.beefTrackingNumbers)
+//    }
+//
+//    @Test
+//    fun emptyBeefTrackingNumber() {
+//        assertEquals("", FoodLabel(context).beefTrackingNumber())
+//    }
 }
