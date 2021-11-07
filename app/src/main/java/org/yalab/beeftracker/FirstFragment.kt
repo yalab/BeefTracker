@@ -50,9 +50,7 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.cameraCaptureButton.setOnClickListener {
-            startCamera()
-        }
+        startCamera()
     }
 
     fun renderCattleInfo(beefTrackingNumber: String) = runBlocking {
