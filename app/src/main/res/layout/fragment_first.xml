@@ -21,12 +21,13 @@
     <androidx.camera.view.PreviewView
         android:id="@+id/viewFinder"
         android:layout_width="match_parent"
-        android:layout_height="320dp" />
+        android:layout_height="320dp"
+        android:visibility="invisible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="409dp"
-        android:layout_height="299dp"
-        android:layout_marginTop="2dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
         tools:layout_editor_absoluteX="43dp">
 
         <TextView
