@@ -19,7 +19,6 @@ import java.io.InputStream
 
 class FoodLabel constructor(_context: Context) {
     lateinit var bitmap: Bitmap
-    lateinit var texts: List<String>
 
     private val context: Context
     private val dnnNet: Net
@@ -60,7 +59,8 @@ class FoodLabel constructor(_context: Context) {
 
     constructor(_context: Context, inputStream: InputStream): this(_context) {
         Utils.bitmapToMat(BitmapFactory.decodeStream(inputStream), mat)
-        renderTextRectangles()
+        val texts = extractTexts()
+        addBeefTrackingNumbers(texts)
     }
 
     constructor(_context: Context, image: ImageProxy): this(_context) {}
@@ -72,10 +72,11 @@ class FoodLabel constructor(_context: Context) {
         matrix.postRotate(90.0f)
         val rotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true);
         Utils.bitmapToMat(rotated, mat)
-        renderTextRectangles()
+        val texts = extractTexts()
+        addBeefTrackingNumbers(texts)
     }
 
-    fun renderTextRectangles() {
+    fun extractTexts(): List<String> {
         val rectangles = textRectangles(mat)
         val green = Scalar(0.0, 255.0, 0.0)
         rectangles.forEach({vertices ->
@@ -83,9 +84,10 @@ class FoodLabel constructor(_context: Context) {
                 Imgproc.line(mat, vertices[j], vertices[(j + 1) % 4], green, 5)
             }
         })
-        addBeefTrackingNumbers(recognize(mat, rectangles))
+        val texts = recognize(mat, rectangles)
         bitmap = Bitmap.createBitmap(mat.width(), mat.height(), Bitmap.Config.ARGB_8888)
         Utils.matToBitmap(mat, bitmap)
+        return texts
     }
 
     fun beefTrackingNumber(): String {
