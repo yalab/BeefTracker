@@ -18,6 +18,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import kotlinx.android.synthetic.main.fragment_first.*
 import kotlinx.coroutines.*
 import org.yalab.beeftracker.databinding.FragmentFirstBinding
@@ -86,6 +87,10 @@ class FirstFragment : Fragment() {
         val preview = Preview.Builder()
             .build()
             .also { it.setSurfaceProvider(viewFinder.surfaceProvider) }
+        val cameraSelector : CameraSelector = CameraSelector.Builder()
+            .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+            .build()
+        cameraProviderFuture.get().bindToLifecycle(this as LifecycleOwner, cameraSelector, imageAnalysis, preview)
         cameraProviderFuture.addListener(Runnable {
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
             imageAnalysis!!.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), ImageAnalysis.Analyzer { image ->
@@ -95,10 +100,14 @@ class FirstFragment : Fragment() {
                     }
                     foodLabel!!.nextFrame(image)
                     val number = foodLabel!!.beefTrackingNumber()
-                    binding.imageView.setImageBitmap(foodLabel!!.bitmap)
-                    if(number.length > 9) {
-                        renderCattleInfo(number)
-                        cameraProvider.unbindAll()
+                    try {
+                        binding.imageView.setImageBitmap(foodLabel!!.bitmap)
+                        if (number.length > 9) {
+                            renderCattleInfo(number)
+                            cameraProvider.unbindAll()
+                        }
+                    }catch(e: Exception) {
+                        println(e)
                     }
                 }
             })
