@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        tools:layout_editor_absoluteX="43dp">
+
+        <TextView
+            android:id="@+id/label_tracking_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/tracking_number"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tracking_number"
+            android:layout_width="0dp"
+            android:layout_height="19dp"
+            android:layout_marginStart="96dp"
+            app:layout_constraintStart_toEndOf="@+id/label_tracking_number"
+            app:layout_constraintTop_toTopOf="@+id/label_tracking_number" />
+
+        <TextView
+            android:id="@+id/label_birth_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/birth_day"
+            app:layout_constraintStart_toStartOf="@+id/label_tracking_number"
+            app:layout_constraintTop_toBottomOf="@+id/label_tracking_number" />
+
+        <TextView
+            android:id="@+id/birth_day"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@+id/tracking_number"
+            app:layout_constraintTop_toBottomOf="@+id/tracking_number" />
+
+        <TextView
+            android:id="@+id/label_gender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/gender"
+            app:layout_constraintStart_toStartOf="@+id/label_birth_day"
+            app:layout_constraintTop_toBottomOf="@+id/label_birth_day" />
+
+        <TextView
+            android:id="@+id/gender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@+id/birth_day"
+            app:layout_constraintTop_toBottomOf="@+id/birth_day" />
+
+        <TextView
+            android:id="@+id/label_mother_tracking_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/mother_tracking_number"
+            app:layout_constraintStart_toStartOf="@+id/label_gender"
+            app:layout_constraintTop_toBottomOf="@+id/label_gender" />
+
+        <TextView
+            android:id="@+id/mother_tracking_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@+id/gender"
+            app:layout_constraintTop_toBottomOf="@+id/gender" />
+
+        <TextView
+            android:id="@+id/label_breed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/breed"
+            app:layout_constraintStart_toStartOf="@+id/label_mother_tracking_number"
+            app:layout_constraintTop_toBottomOf="@+id/label_mother_tracking_number" />
+
+        <TextView
+            android:id="@+id/breed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@+id/mother_tracking_number"
+            app:layout_constraintTop_toBottomOf="@+id/mother_tracking_number" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,12 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".FirstFragment">
 
+    <include
+        android:id="@+id/cattle_info"
+        layout="@layout/cattle_info" />
+
     <androidx.camera.view.PreviewView
         android:id="@+id/viewFinder"
         android:layout_width="match_parent"
         android:layout_height="320dp"
         android:visibility="invisible" />
-
 
     <ImageView
         android:id="@+id/imageView"

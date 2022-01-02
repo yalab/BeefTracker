@@ -63,11 +63,11 @@ class FirstFragment : Fragment() {
             }
             deferred.await()
             val cattle = nlbc.cattle
-//            binding.trackingNumber.text = cattle.trackingNumber
-//            binding.birthDay.text = cattle.birthDay
-//            binding.gender.text = cattle.gender
-//            binding.motherTrackingNumber.text = cattle.motherTrackingNumber
-//            binding.breed.text = cattle.breed
+            binding.cattleInfo.trackingNumber.text = cattle.trackingNumber
+            binding.cattleInfo.birthDay.text = cattle.birthDay
+            binding.cattleInfo.gender.text = cattle.gender
+            binding.cattleInfo.motherTrackingNumber.text = cattle.motherTrackingNumber
+            binding.cattleInfo.breed.text = cattle.breed
         }
     }
 
