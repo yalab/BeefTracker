@@ -7,6 +7,10 @@ import android.graphics.Matrix
 import androidx.camera.core.ImageProxy
 import com.example.android.camera.utils.YuvToRgbConverter
 import com.googlecode.tesseract.android.TessBaseAPI
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
 import org.opencv.core.*
@@ -14,6 +18,7 @@ import org.opencv.dnn.Dnn
 import org.opencv.dnn.Net
 import org.opencv.imgproc.Imgproc
 import org.opencv.utils.Converters
+import org.yalab.beeftracker.databinding.CattleInfoBinding
 import java.io.File
 import java.io.InputStream
 
@@ -29,6 +34,22 @@ class FoodLabel constructor(_context: Context) {
     get() = _beefTrackingNumbers
     companion object {
         val REG_TRACKNING_NUMBER = Regex("""\d{10}""")
+
+        fun renderCattleInfo(beefTrackingNumber: String, context: Context, binding: CattleInfoBinding) = runBlocking {
+            launch {
+                val nlbc = NLBC()
+                val deferred = async(Dispatchers.IO) {
+                    nlbc.fetch(beefTrackingNumber)
+                }
+                deferred.await()
+                val cattle = nlbc.cattle
+                binding.trackingNumber.text = cattle.trackingNumber
+                binding.birthDay.text = cattle.birthDay
+                binding.gender.text = cattle.gender
+                binding.motherTrackingNumber.text = cattle.motherTrackingNumber
+                binding.breed.text = cattle.breed
+            }
+        }
     }
 
     init{

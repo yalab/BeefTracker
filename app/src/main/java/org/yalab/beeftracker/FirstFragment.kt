@@ -56,19 +56,7 @@ class FirstFragment : Fragment() {
 
     fun renderCattleInfo(beefTrackingNumber: String) = runBlocking {
         val context = context as Context
-        launch {
-            val nlbc = NLBC()
-            val deferred = async(Dispatchers.IO) {
-                nlbc.fetch(beefTrackingNumber)
-            }
-            deferred.await()
-            val cattle = nlbc.cattle
-            binding.cattleInfo.trackingNumber.text = cattle.trackingNumber
-            binding.cattleInfo.birthDay.text = cattle.birthDay
-            binding.cattleInfo.gender.text = cattle.gender
-            binding.cattleInfo.motherTrackingNumber.text = cattle.motherTrackingNumber
-            binding.cattleInfo.breed.text = cattle.breed
-        }
+        FoodLabel.renderCattleInfo(beefTrackingNumber, context, binding.cattleInfo)
     }
 
     override fun onDestroyView() {

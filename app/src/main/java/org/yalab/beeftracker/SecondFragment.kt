@@ -1,5 +1,6 @@
 package org.yalab.beeftracker
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -48,7 +49,10 @@ class SecondFragment : Fragment(), TextWatcher {
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        println(s)
+        if(count == 10) {
+            val context = context as Context
+            FoodLabel.renderCattleInfo(s.toString(), context, binding.cattleInfo)
+        }
     }
 
     override fun afterTextChanged(s: Editable?) {
